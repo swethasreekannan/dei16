@@ -5,7 +5,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { cn } from "@/lib/utils";
-import { FolderOpen, LogOut, LayoutDashboard } from "lucide-react";
+import { FolderOpen, LogOut, LayoutDashboard, Users } from "lucide-react";
 
 export default function DashboardLayout({
   children,
@@ -43,6 +43,7 @@ export default function DashboardLayout({
 
   const navItems = [
     { href: "/projects", label: "Clients", icon: FolderOpen },
+    { href: "/team", label: "Team", icon: Users },
   ];
 
   return (

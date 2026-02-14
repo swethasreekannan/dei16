@@ -11,10 +11,11 @@ from backend.models.database import get_supabase
 class AuthContext:
     """Holds the authenticated user's context."""
 
-    def __init__(self, user_id: UUID, email: str, org_id: UUID | None = None):
+    def __init__(self, user_id: UUID, email: str, org_id: UUID | None = None, org_role: str | None = None):
         self.user_id = user_id
         self.email = email
         self.org_id = org_id
+        self.org_role = org_role
 
 
 async def get_current_user(request: Request) -> AuthContext:
@@ -40,11 +41,12 @@ async def get_current_user(request: Request) -> AuthContext:
     # Get the user's org (use first org for now; multi-org comes later)
     org_result = (
         sb.table("org_members")
-        .select("org_id")
+        .select("org_id, role")
         .eq("user_id", str(user.id))
         .limit(1)
         .execute()
     )
     org_id = UUID(org_result.data[0]["org_id"]) if org_result.data else None
+    org_role = org_result.data[0]["role"] if org_result.data else None
 
-    return AuthContext(user_id=UUID(user.id), email=user.email, org_id=org_id)
+    return AuthContext(user_id=UUID(user.id), email=user.email, org_id=org_id, org_role=org_role)

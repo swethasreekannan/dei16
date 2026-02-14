@@ -21,6 +21,45 @@ class OrgResponse(BaseModel):
     created_at: datetime
 
 
+# --- Team / Invitations ---
+
+
+class InvitationCreate(BaseModel):
+    email: str
+    role: str = "member"
+
+
+class InvitationResponse(BaseModel):
+    id: UUID
+    org_id: UUID
+    email: str
+    role: str
+    invited_by: UUID | None
+    status: str
+    created_at: datetime
+    accepted_at: datetime | None = None
+
+
+class OrgMemberResponse(BaseModel):
+    id: UUID
+    org_id: UUID
+    user_id: UUID
+    role: str
+    created_at: datetime
+    email: str | None = None
+    full_name: str | None = None
+    avatar_url: str | None = None
+
+
+class MemberRoleUpdate(BaseModel):
+    role: str
+
+
+class TeamPageResponse(BaseModel):
+    members: list[OrgMemberResponse]
+    invitations: list[InvitationResponse]
+
+
 # --- Clients ---
 
 

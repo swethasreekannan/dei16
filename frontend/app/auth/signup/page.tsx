@@ -37,17 +37,19 @@ export default function SignupPage() {
       return;
     }
 
-    // Create organization
-    try {
-      const slug = orgName
-        .toLowerCase()
-        .replace(/[^a-z0-9]+/g, "-")
-        .replace(/^-|-$/g, "");
-      await setupOrg({ name: orgName, slug });
-    } catch (err: any) {
-      setError(err.message || "Failed to create organization");
-      setLoading(false);
-      return;
+    // Create organization (skip if invited to an existing team)
+    if (orgName.trim()) {
+      try {
+        const slug = orgName
+          .toLowerCase()
+          .replace(/[^a-z0-9]+/g, "-")
+          .replace(/^-|-$/g, "");
+        await setupOrg({ name: orgName, slug });
+      } catch (err: any) {
+        setError(err.message || "Failed to create organization");
+        setLoading(false);
+        return;
+      }
     }
 
     router.push("/projects");
@@ -88,10 +90,12 @@ export default function SignupPage() {
               type="text"
               value={orgName}
               onChange={(e) => setOrgName(e.target.value)}
-              required
               className="w-full px-3 py-2 border border-border rounded-lg bg-background text-sm focus:outline-none focus:ring-2 focus:ring-accent"
               placeholder="Acme Agency"
             />
+            <p className="text-xs text-muted-foreground mt-1">
+              Leave blank if joining an existing team
+            </p>
           </div>
 
           <div>

@@ -144,3 +144,68 @@ export async function getBrief(briefId: string): Promise<Brief> {
 export async function listClientBriefs(clientId: string): Promise<Brief[]> {
   return apiFetch(`/briefs/client/${clientId}`);
 }
+
+// --- Team ---
+
+export interface OrgMember {
+  id: string;
+  org_id: string;
+  user_id: string;
+  role: string;
+  created_at: string;
+  email: string | null;
+  full_name: string | null;
+  avatar_url: string | null;
+}
+
+export interface Invitation {
+  id: string;
+  org_id: string;
+  email: string;
+  role: string;
+  invited_by: string | null;
+  status: string;
+  created_at: string;
+  accepted_at: string | null;
+}
+
+export interface TeamData {
+  members: OrgMember[];
+  invitations: Invitation[];
+}
+
+export async function getTeam(): Promise<TeamData> {
+  return apiFetch("/team/");
+}
+
+export async function createInvitation(data: {
+  email: string;
+  role: string;
+}): Promise<Invitation> {
+  return apiFetch("/team/invitations", {
+    method: "POST",
+    body: JSON.stringify(data),
+  });
+}
+
+export async function cancelInvitation(invitationId: string): Promise<void> {
+  return apiFetch(`/team/invitations/${invitationId}`, {
+    method: "DELETE",
+  });
+}
+
+export async function updateMemberRole(
+  userId: string,
+  role: string
+): Promise<void> {
+  return apiFetch(`/team/members/${userId}/role`, {
+    method: "PATCH",
+    body: JSON.stringify({ role }),
+  });
+}
+
+export async function removeMember(userId: string): Promise<void> {
+  return apiFetch(`/team/members/${userId}`, {
+    method: "DELETE",
+  });
+}
